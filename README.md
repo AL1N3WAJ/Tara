@@ -1,6 +1,6 @@
 # আকাশ · Akash — Bangladesh Star Chart & Constellation Chart
 
-**Live Demo:** https://al1n3waj.github.io/Taradekho/
+**Live Demo:** https://al1n3waj.github.io/Tara/
 
 An accurate, 100% static, offline-capable web application that draws sky charts and constellation charts for any date, time, and location in **Bangladesh**, with **Bangla (বাংলা)** and **English** labels, a **Bortle-scale light-pollution filter**, and client-side **PNG / JPG / ZIP** export.
 
