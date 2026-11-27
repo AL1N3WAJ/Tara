@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+  <meta name="description" content="Akash — Bangladesh Star Chart &amp; Constellation Chart in Bangla and English"/>
+  <meta name="theme-color" content="#18222F"/>
+  <title>তারা দেখো — Bangladesh Star Chart</title>
+
+  <!-- PWA manifest (relative for sub-path hosting) -->
+  <link rel="manifest" href="./manifest.webmanifest"/>
+
+  <!-- Icons -->
+  <link rel="icon" type="image/svg+xml" href="./icons/icon.svg"/>
+  <link rel="apple-touch-icon" href="./icons/icon-192.png"/>
+
+  <!-- Fonts: subset Noto Sans Bengali + Inter, served locally -->
+  <style>
+    @font-face {
+      font-family: 'Noto Sans Bengali';
+      src: url('./vendor/fonts/NotoSansBengali-Regular.woff2') format('woff2');
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Noto Sans Bengali';
+      src: url('./vendor/fonts/NotoSansBengali-Bold.woff2') format('woff2');
+      font-weight: 700;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Inter';
+      src: url('./vendor/fonts/Inter-Regular.woff2') format('woff2');
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Inter';
+      src: url('./vendor/fonts/Inter-Bold.woff2') format('woff2');
+      font-weight: 700;
+      font-style: normal;
+      font-display: swap;
+    }
+  </style>
+
+  <link rel="stylesheet" href="./css/style.css"/>
+</head>
+<body>
+  <!-- Skip link for accessibility -->
+  <a href="#star-canvas" class="skip-link">Skip to star chart</a>
+
+  <!-- ═══ App shell ══════════════════════════════════════════════════════════ -->
+  <div id="app">
+
+    <!-- Top bar -->
+    <header id="topbar" role="banner">
+      <div class="topbar-left">
+        <button id="btn-sidebar" class="icon-btn" aria-label="Toggle settings panel" aria-controls="sidebar" aria-expanded="false">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
+        <h1 class="app-title">
+          <span lang="bn">আকাশ</span>
+          <span class="title-sep">·</span>
+          <span>Akash</span>
+        </h1>
+      </div>
+
+      <div class="topbar-centre">
+        <!-- Search -->
+        <div class="search-wrap" role="search">
+          <label for="search-input" class="sr-only" data-i18n="search">Search</label>
+          <svg class="search-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M16.5 16.5 21 21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          <input id="search-input" type="search" autocomplete="off"
+                 data-i18n-placeholder="searchPlaceholder"
+                 placeholder="Search stars, constellations…"/>
+        </div>
+      </div>
+
+      <div class="topbar-right">
+        <button id="btn-night" class="icon-btn" type="button" aria-pressed="false" aria-label="Night Vision (Red)" title="Night Vision (Red)" data-i18n-title="nightVision" data-i18n-aria-label="nightVision">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+        </button>
+        <button id="btn-share" class="icon-btn" aria-label="Copy shareable link" title="Share link">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.59 13.51 6.83 3.98M15.41 6.51 8.59 10.49" stroke="currentColor" stroke-width="2"/></svg>
+        </button>
+        <button id="btn-now" class="btn btn-primary btn-sm" data-i18n="now">Now</button>
+      </div>
+    </header>
+
+    <!-- ─── Main layout ───────────────────────────────────────────────────── -->
+    <div id="main-layout">
+
+      <!-- Star chart canvas area -->
+      <main id="chart-area" role="main">
+        <div id="canvas-wrap">
+          <canvas id="star-canvas" role="img" aria-label="Interactive star chart for Bangladesh sky"></canvas>
+          <div id="zoom-controls" class="zoom-controls" aria-label="Zoom controls">
+            <button id="btn-zoom-in" class="zoom-btn" type="button" aria-label="Zoom in" title="Zoom in (+)">+</button>
+            <span id="zoom-level" class="zoom-level">100%</span>
+            <button id="btn-zoom-out" class="zoom-btn" type="button" aria-label="Zoom out" title="Zoom out (-)">−</button>
+            <button id="btn-zoom-reset" class="zoom-btn" type="button" aria-label="Reset zoom" title="Reset zoom (0)">⟲</button>
+          </div>
+        </div>
+
+        <!-- Mode / projection toolbar -->
+        <div id="chart-toolbar" role="toolbar" aria-label="Chart mode">
+          <fieldset class="btn-group" aria-label="Chart mode">
+            <legend class="sr-only">Chart mode</legend>
+            <label class="btn-toggle">
+              <input type="radio" name="chart-mode" value="allsky" checked/>
+              <span data-i18n="modeAllSky">All-sky</span>
+            </label>
+            <label class="btn-toggle">
+              <input type="radio" name="chart-mode" value="directional"/>
+              <span data-i18n="modeDirectional">Directional</span>
+            </label>
+            <label class="btn-toggle">
+              <input type="radio" name="chart-mode" value="constellation"/>
+              <span data-i18n="modeConstellation">Constellation</span>
+            </label>
+          </fieldset>
+
+          <fieldset class="btn-group" aria-label="Star and constellation label language">
+            <legend class="sr-only">Label language</legend>
+            <label class="btn-toggle">
+              <input type="radio" name="label-lang" value="both" checked/>
+              <span>Both</span>
+            </label>
+            <label class="btn-toggle">
+              <input type="radio" name="label-lang" value="bn"/>
+              <span lang="bn">বাংলা</span>
+            </label>
+            <label class="btn-toggle">
+              <input type="radio" name="label-lang" value="en"/>
+              <span>English</span>
+            </label>
+          </fieldset>
+
+          <div id="directional-controls" class="hidden" aria-label="Direction controls">
+            <fieldset class="btn-group" aria-label="Compass direction">
+              <legend class="sr-only">Direction</legend>
+              <label class="btn-toggle"><input type="radio" name="direction" value="N" checked/><span>N</span></label>
+              <label class="btn-toggle"><input type="radio" name="direction" value="E"/><span>E</span></label>
+              <label class="btn-toggle"><input type="radio" name="direction" value="S"/><span>S</span></label>
+              <label class="btn-toggle"><input type="radio" name="direction" value="W"/><span>W</span></label>
+            </fieldset>
+            <label class="slider-label">
+              <span data-i18n="fov">FOV</span>
+              <input id="fov-slider" type="range" min="30" max="120" value="90" step="5"/>
+              <output id="fov-output">90°</output>
+            </label>
+          </div>
+        </div>
+
+        <!-- Time slider -->
+        <div id="time-nav" aria-label="Time navigation">
+          <button id="btn-play" class="icon-btn" aria-label="Play sky animation" title="Play">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="5,3 19,12 5,21"/></svg>
+          </button>
+          <label for="time-slider" class="sr-only">Hour of day</label>
+          <input id="time-slider" type="range" min="0" max="1439" value="1260" step="1"/>
+          <span id="time-display" aria-live="polite">21:00 BST</span>
+        </div>
+
+        <!-- Object info card (shown on tap) -->
+        <aside id="info-card" role="complementary" aria-label="Object information" style="display:none"></aside>
+
+        <!-- Bangla date display -->
+        <div id="bn-date-display" class="hidden" aria-live="polite"></div>
+      </main>
+
+      <!-- ─── Settings sidebar ─────────────────────────────────────────────── -->
+      <aside id="sidebar" role="complementary" aria-label="Chart settings">
+        <div id="sidebar-inner">
+
+          <!-- SECTION: Location -->
+          <section class="panel-section" aria-labelledby="sec-location-h">
+            <button class="panel-toggle" data-target="sec-location" aria-expanded="true" id="sec-location-h">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
+              <span data-i18n="location">Location</span>
+              <svg class="chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+            </button>
+            <div id="sec-location" class="panel-body">
+              <label for="location-select" data-i18n="locationPreset">Location preset</label>
+              <select id="location-select" aria-label="Select a location preset"></select>
+
+              <div id="custom-latlon" class="form-row hidden">
+                <label>
+                  <span data-i18n="latitude">Latitude</span>
+                  <input id="input-lat" type="number" min="-90" max="90" step="0.0001" value="23.81"/>
+                </label>
+                <label>
+                  <span data-i18n="longitude">Longitude</span>
+                  <input id="input-lon" type="number" min="-180" max="180" step="0.0001" value="90.41"/>
+                </label>
+              </div>
+
+              <button id="btn-gps" class="btn btn-sm">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>
+                <span data-i18n="useGPS">Use GPS</span>
+              </button>
+
+              <div class="info-row">
+                <span data-i18n="polarisAlt">Polaris altitude:</span>
+                <strong id="info-polaris-alt">—</strong>
+              </div>
+            </div>
+          </section>
+
+          <!-- SECTION: Date & Time -->
+          <section class="panel-section" aria-labelledby="sec-datetime-h">
+            <button class="panel-toggle" data-target="sec-datetime" aria-expanded="true" id="sec-datetime-h">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+              <span data-i18n="dateTime">Date &amp; Time</span>
+              <svg class="chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+            </button>
+            <div id="sec-datetime" class="panel-body">
+              <div class="form-row">
+                <label for="input-date" data-i18n="date">Date</label>
+                <input id="input-date" type="date"/>
+              </div>
+              <div class="form-row">
+                <label for="input-time" data-i18n="time">Time (BST)</label>
+                <input id="input-time" type="time" value="21:00"/>
+              </div>
+              <div class="checkbox-row">
+                <label>
+                  <input type="checkbox" id="bn-cal"/>
+                  <span data-i18n="banglaCalendar">Bangla calendar</span>
+                </label>
+                <label>
+                  <input type="checkbox" id="bn-nums"/>
+                  <span data-i18n="banglaDigits">Bangla digits</span>
+                </label>
+              </div>
+              <div class="info-row">
+                <span data-i18n="twilight">Twilight:</span>
+                <strong id="info-twilight">—</strong>
+              </div>
+            </div>
+          </section>
+
+          <!-- SECTION: Sky Darkness (Bortle) -->
+          <section class="panel-section" aria-labelledby="sec-bortle-h">
+            <button class="panel-toggle" data-target="sec-bortle" aria-expanded="true" id="sec-bortle-h">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="5"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+              <span data-i18n="skyDarkness">Sky Darkness</span>
+              <svg class="chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+            </button>
+            <div id="sec-bortle" class="panel-body">
+              <label for="bortle-select" data-i18n="bortleScale">Bortle scale</label>
+              <select id="bortle-select" aria-label="Select Bortle class"></select>
+
+              <div id="custom-nelm" class="hidden">
+                <label for="nelm-slider">
+                  <span data-i18n="customNELM">Custom NELM</span>
+                  <output id="nelm-output">5.0</output>
+                </label>
+                <input id="nelm-slider" type="range" min="2.0" max="8.0" step="0.1" value="5.0"/>
+              </div>
+
+              <label for="k-slider">
+                <span data-i18n="extinction">Haze/humidity (k)</span>
+                <output id="k-output">0.30</output>
+              </label>
+              <input id="k-slider" type="range" min="0.15" max="0.5" step="0.01" value="0.3"/>
+
+              <label class="checkbox-row">
+                <input type="checkbox" id="moon-penalty"/>
+                <span data-i18n="moonPenalty">Moon glow penalty</span>
+              </label>
+
+              <div class="info-row">
+                <span data-i18n="activeLimitMag">Active NELM:</span>
+                <strong id="info-nelm">—</strong>
+              </div>
+
+              <button id="btn-compare" class="btn btn-sm" data-i18n="compareMode">Compare Bortle</button>
+            </div>
+          </section>
+
+          <!-- SECTION: Layers -->
+          <section class="panel-section" aria-labelledby="sec-layers-h">
+            <button class="panel-toggle" data-target="sec-layers" aria-expanded="false" id="sec-layers-h">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+              <span data-i18n="layers">Layers</span>
+              <svg class="chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+            </button>
+            <div id="sec-layers" class="panel-body collapsed">
+              <div id="layer-toggles" role="group" aria-label="Chart layers"></div>
+              <label class="checkbox-row">
+                <input type="checkbox" id="show-below"/>
+                <span data-i18n="showBelowHorizon">Show below horizon</span>
+              </label>
+            </div>
+          </section>
+
+          <!-- SECTION: Projection -->
+          <section class="panel-section" aria-labelledby="sec-proj-h">
+            <button class="panel-toggle" data-target="sec-proj" aria-expanded="false" id="sec-proj-h">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><path d="M2 12h20"/></svg>
+              <span data-i18n="projection">Projection</span>
+              <svg class="chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+            </button>
+            <div id="sec-proj" class="panel-body collapsed">
+              <fieldset aria-label="Projection type">
+                <legend class="sr-only" data-i18n="projection">Projection</legend>
+                <label><input type="radio" name="projection" value="equidistant" checked/>
+                  <span data-i18n="projEquidistant">Azimuthal equidistant</span></label>
+                <label><input type="radio" name="projection" value="stereographic"/>
+                  <span data-i18n="projStereographic">Stereographic</span></label>
+              </fieldset>
+            </div>
+          </section>
+
+          <!-- SECTION: Language -->
+          <section class="panel-section" aria-labelledby="sec-lang-h">
+            <button class="panel-toggle" data-target="sec-lang" aria-expanded="false" id="sec-lang-h">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12.87 15.07l-2.54-2.51.03-.03A17.52 17.52 0 0 0 14.07 6H17V4h-7V2H8v2H1v2h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11.76-2.04zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2l-4.5-12zm-2.62 7l1.62-4.33L19.12 17h-3.24z"/></svg>
+              <span data-i18n="language">Language</span>
+              <svg class="chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+            </button>
+            <div id="sec-lang" class="panel-body collapsed">
+              <label for="lang-select" data-i18n="chartLabels">Chart labels</label>
+              <select id="lang-select" aria-label="Chart label language">
+                <option value="both" selected>Both (বাংলা + English)</option>
+                <option value="bn">বাংলা only</option>
+                <option value="en">English only</option>
+              </select>
+
+              <label for="ui-lang" data-i18n="uiLanguage">Interface language</label>
+              <select id="ui-lang" aria-label="UI language">
+                <option value="en" selected>English</option>
+                <option value="bn">বাংলা</option>
+              </select>
+
+              <button id="btn-names-editor" class="btn btn-sm" data-i18n="namesEditor">Names Editor</button>
+            </div>
+          </section>
+
+          <!-- SECTION: Sun & Moon info -->
+          <section class="panel-section" aria-labelledby="sec-sunmoon-h">
+            <button class="panel-toggle" data-target="sec-sunmoon" aria-expanded="false" id="sec-sunmoon-h">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9z"/></svg>
+              <span data-i18n="sunMoon">Sun &amp; Moon</span>
+              <svg class="chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+            </button>
+            <div id="sec-sunmoon" class="panel-body collapsed">
+              <dl class="info-dl">
+                <dt data-i18n="sunrise">Sunrise</dt>  <dd id="info-sun-rise">—</dd>
+                <dt data-i18n="sunset">Sunset</dt>    <dd id="info-sun-set">—</dd>
+                <dt data-i18n="moonrise">Moonrise</dt><dd id="info-moon-rise">—</dd>
+                <dt data-i18n="moonset">Moonset</dt>  <dd id="info-moon-set">—</dd>
+                <dt data-i18n="phase">Moon phase</dt> <dd id="info-moon-phase">—</dd>
+                <dt data-i18n="illuminated">Illuminated</dt><dd id="info-moon-pct">—</dd>
+              </dl>
+            </div>
+          </section>
+
+          <!-- SECTION: Visible tonight -->
+          <section class="panel-section" aria-labelledby="sec-visible-h">
+            <button class="panel-toggle" data-target="sec-visible" aria-expanded="false" id="sec-visible-h">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              <span data-i18n="visibleTonight">Visible Tonight</span>
+              <svg class="chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+            </button>
+            <div id="sec-visible" class="panel-body collapsed">
+              <div id="visible-tonight"></div>
+            </div>
+          </section>
+
+          <!-- SECTION: Export -->
+          <section class="panel-section" aria-labelledby="sec-export-h">
+            <button class="panel-toggle" data-target="sec-export" aria-expanded="false" id="sec-export-h">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              <span data-i18n="export">Export</span>
+              <svg class="chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+            </button>
+            <div id="sec-export" class="panel-body collapsed">
+              <form id="export-form" novalidate>
+                <fieldset aria-label="Export scope">
+                  <legend data-i18n="exportScope">Scope</legend>
+                  <label><input type="radio" name="export-scope" value="single" checked/> <span data-i18n="exportSingle">Single image</span></label>
+                  <label><input type="radio" name="export-scope" value="month"/>  <span data-i18n="exportMonth">Month</span></label>
+                  <label><input type="radio" name="export-scope" value="year"/>   <span data-i18n="exportYear">Year</span></label>
+                </fieldset>
+
+                <div id="export-month-opts" class="hidden">
+                  <label for="export-month-sel" data-i18n="month">Month</label>
+                  <div class="form-row">
+                    <select id="export-month-sel" name="export-month">
+                      <option value="1">January</option><option value="2">February</option>
+                      <option value="3">March</option><option value="4">April</option>
+                      <option value="5">May</option><option value="6">June</option>
+                      <option value="7">July</option><option value="8">August</option>
+                      <option value="9">September</option><option value="10">October</option>
+                      <option value="11">November</option><option value="12">December</option>
+                    </select>
+                    <input type="number" name="export-year" value="2026" min="2000" max="2100" style="width:80px"/>
+                  </div>
+                  <fieldset aria-label="Frequency">
+                    <legend data-i18n="frequency">Frequency</legend>
+                    <label><input type="radio" name="export-freq" value="everynight" checked/><span data-i18n="everyNight">Every night</span></label>
+                    <label><input type="radio" name="export-freq" value="weekly"/><span data-i18n="weekly">Weekly</span></label>
+                    <label><input type="radio" name="export-freq" value="bimonthly"/><span data-i18n="bimonthly">1st &amp; 15th</span></label>
+                  </fieldset>
+                </div>
+
+                <div id="export-year-opts" class="hidden">
+                  <label for="export-year-sel" data-i18n="year">Year</label>
+                  <input id="export-year-sel" type="number" name="export-year" value="2026" min="2000" max="2100"/>
+                  <label><input type="checkbox" name="export-poster"/><span data-i18n="includePoster">Include year poster</span></label>
+                </div>
+
+                <label for="export-format" data-i18n="format">Format</label>
+                <select id="export-format" name="export-format">
+                  <option value="png" selected>PNG</option>
+                  <option value="jpg">JPG</option>
+                </select>
+
+                <label for="export-res" data-i18n="resolution">Resolution</label>
+                <select id="export-res" name="export-res">
+                  <option value="1080">1080 px</option>
+                  <option value="2048" selected>2048 px</option>
+                  <option value="4096">4096 px</option>
+                </select>
+
+                <label><input type="checkbox" name="export-footer" checked/><span data-i18n="includeFooter">Include footer</span></label>
+                <label><input type="checkbox" name="export-print"/><span data-i18n="invertPrint">Invert for Printing (White Background)</span></label>
+
+                <button type="submit" class="btn btn-primary" data-i18n="download">Download</button>
+              </form>
+
+              <div id="export-progress" style="display:none" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+                <div id="export-progress-bar"></div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Footer links -->
+          <footer class="sidebar-footer">
+            <a href="https://github.com/YOUR_USER/akash" target="_blank" rel="noopener">GitHub</a>
+            ·
+            <a href="https://github.com/YOUR_USER/akash/issues/new?template=bangla_name_suggestion.yml"
+               target="_blank" rel="noopener" data-i18n="improveBanglaNames">Improve Bangla names</a>
+          </footer>
+
+        </div><!-- /#sidebar-inner -->
+      </aside><!-- /#sidebar -->
+
+    </div><!-- /#main-layout -->
+  </div><!-- /#app -->
+
+  <!-- Toast notification -->
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <!-- astronomy-engine (vendored, global Astronomy object) -->
+  <script src="./vendor/astronomy-engine/astronomy.browser.js"></script>
+
+  <!-- JSZip + FileSaver (vendored) -->
+  <script src="./vendor/jszip/jszip.min.js"></script>
+  <script src="./vendor/filesaver/FileSaver.min.js"></script>
+
+  <!-- App entry point (ES module) -->
+  <script type="module" src="./js/main.js"></script>
+
+  <!-- Inline script: wire export-scope radio to show/hide sub-options -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const radios = document.querySelectorAll('[name="export-scope"]');
+      const mo = document.getElementById('export-month-opts');
+      const yo = document.getElementById('export-year-opts');
+      radios.forEach(r => r.addEventListener('change', () => {
+        mo?.classList.toggle('hidden', r.value !== 'month' || !r.checked);
+        yo?.classList.toggle('hidden', r.value !== 'year'  || !r.checked);
+      }));
+
+      // FOV slider output
+      const fovSlider = document.getElementById('fov-slider');
+      const fovOut    = document.getElementById('fov-output');
+      fovSlider?.addEventListener('input', () => { if (fovOut) fovOut.textContent = fovSlider.value + '°'; });
+
+      // K slider output
+      const kSlider = document.getElementById('k-slider');
+      const kOut    = document.getElementById('k-output');
+      kSlider?.addEventListener('input', () => { if (kOut) kOut.textContent = parseFloat(kSlider.value).toFixed(2); });
+
+      // NELM slider output
+      const nSlider = document.getElementById('nelm-slider');
+      const nOut    = document.getElementById('nelm-output');
+      nSlider?.addEventListener('input', () => { if (nOut) nOut.textContent = parseFloat(nSlider.value).toFixed(1); });
+
+      // chart-mode radio: show/hide directional controls
+      document.querySelectorAll('[name="chart-mode"]').forEach(r => {
+        r.addEventListener('change', () => {
+          const dc = document.getElementById('directional-controls');
+          if (dc) dc.classList.toggle('hidden', r.value !== 'directional' || !r.checked);
+        });
+      });
+
+      // time slider → update display
+      const tSlider = document.getElementById('time-slider');
+      const tDisplay = document.getElementById('time-display');
+      tSlider?.addEventListener('input', () => {
+        const v = parseInt(tSlider.value, 10);
+        const h = Math.floor(v / 60), m = v % 60;
+        if (tDisplay) tDisplay.textContent = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')} BST`;
+      });
+
+      // play button animation
+      let playing = false, playTimer = null;
+      document.getElementById('btn-play')?.addEventListener('click', () => {
+        playing = !playing;
+        if (playing) {
+          playTimer = setInterval(() => {
+            if (!tSlider) return;
+            tSlider.value = (parseInt(tSlider.value,10) + 1) % 1440;
+            tSlider.dispatchEvent(new Event('input'));
+          }, 50);
+        } else {
+          clearInterval(playTimer);
+        }
+      });
+    });
+  </script>
+</body>
+</html>

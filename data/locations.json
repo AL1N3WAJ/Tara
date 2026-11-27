@@ -1,0 +1,16 @@
+[
+  { "id": "dhaka",      "name": "Dhaka",          "nameBn": "ঢাকা",           "lat": 23.81, "lon": 90.41, "bortle": 9 },
+  { "id": "chattogram", "name": "Chattogram",      "nameBn": "চট্টগ্রাম",      "lat": 22.36, "lon": 91.78, "bortle": 8 },
+  { "id": "sylhet",     "name": "Sylhet",          "nameBn": "সিলেট",          "lat": 24.90, "lon": 91.87, "bortle": 7 },
+  { "id": "rajshahi",   "name": "Rajshahi",        "nameBn": "রাজশাহী",        "lat": 24.37, "lon": 88.60, "bortle": 7 },
+  { "id": "khulna",     "name": "Khulna",          "nameBn": "খুলনা",          "lat": 22.82, "lon": 89.55, "bortle": 7 },
+  { "id": "barishal",   "name": "Barishal",        "nameBn": "বরিশাল",         "lat": 22.70, "lon": 90.37, "bortle": 7 },
+  { "id": "rangpur",    "name": "Rangpur",         "nameBn": "রংপুর",          "lat": 25.74, "lon": 89.25, "bortle": 7 },
+  { "id": "mymensingh", "name": "Mymensingh",      "nameBn": "ময়মনসিংহ",      "lat": 24.75, "lon": 90.41, "bortle": 7 },
+  { "id": "coxsbazar",  "name": "Cox's Bazar",     "nameBn": "কক্সবাজার",      "lat": 21.43, "lon": 91.98, "bortle": 7 },
+  { "id": "teknaf",     "name": "Teknaf",          "nameBn": "টেকনাফ",         "lat": 20.86, "lon": 92.30, "bortle": 5 },
+  { "id": "stmartin",   "name": "St Martin's Island","nameBn": "সেন্ট মার্টিন","lat": 20.63, "lon": 92.32, "bortle": 4 },
+  { "id": "bandarban",  "name": "Bandarban",       "nameBn": "বান্দরবান",      "lat": 22.20, "lon": 92.22, "bortle": 4 },
+  { "id": "sreemangal", "name": "Sreemangal",      "nameBn": "শ্রীমঙ্গল",      "lat": 24.31, "lon": 91.73, "bortle": 5 },
+  { "id": "sundarbans", "name": "Sundarbans (Mongla)","nameBn": "সুন্দরবন",    "lat": 22.30, "lon": 89.60, "bortle": 3 }
+]

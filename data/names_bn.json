@@ -1,0 +1,62 @@
+{
+  "constellations": {
+    "Orion":        { "bn": "কালপুরুষ",   "verified": true  },
+    "Scorpius":     { "bn": "বৃশ্চিক",     "verified": true  },
+    "Leo":          { "bn": "সিংহ",        "verified": true  },
+    "Virgo":        { "bn": "কন্যা",       "verified": true  },
+    "Gemini":       { "bn": "মিথুন",       "verified": true  },
+    "Taurus":       { "bn": "বৃষ",         "verified": true  },
+    "Aries":        { "bn": "মেষ",         "verified": true  },
+    "Cancer":       { "bn": "কর্কট",       "verified": true  },
+    "Libra":        { "bn": "তুলা",        "verified": true  },
+    "Capricornus":  { "bn": "মকর",         "verified": true  },
+    "Aquarius":     { "bn": "কুম্ভ",       "verified": true  },
+    "Pisces":       { "bn": "মীন",         "verified": true  },
+    "Sagittarius":  { "bn": "ধনু",         "verified": true  },
+    "Ursa Major":   { "bn": "সপ্তর্ষিমণ্ডল", "verified": true  },
+    "Ursa Minor":   { "bn": "ক্ষুদ্র সপ্তর্ষি", "verified": true },
+    "Crux":         { "bn": "ত্রিশঙ্কু",   "verified": true  },
+    "Cassiopeia":   { "bn": "ক্যাসিওপিয়া", "verified": false },
+    "Perseus":      { "bn": "পরশু",        "verified": false },
+    "Andromeda":    { "bn": "আন্দ্রোমিডা", "verified": false },
+    "Lyra":         { "bn": "বীণামণ্ডল",   "verified": false },
+    "Aquila":       { "bn": "ঈগলমণ্ডল",   "verified": false },
+    "Cygnus":       { "bn": "রাজহাঁসমণ্ডল","verified": false },
+    "Boötes":       { "bn": "স্বাতীমণ্ডল", "verified": false },
+    "Hercules":     { "bn": "হার্কিউলিস",  "verified": false }
+  },
+  "stars": {
+    "Sirius":    { "bn": "লুব্ধক",    "verified": false },
+    "Polaris":   { "bn": "ধ্রুবতারা", "verified": false },
+    "Canopus":   { "bn": "অগস্ত্য",   "verified": false },
+    "Vega":      { "bn": "অভিজিৎ",   "verified": false },
+    "Arcturus":  { "bn": "স্বাতী",    "verified": false },
+    "Spica":     { "bn": "চিত্রা",    "verified": false },
+    "Antares":   { "bn": "জ্যেষ্ঠা",  "verified": false },
+    "Aldebaran": { "bn": "রোহিণী",   "verified": false },
+    "Betelgeuse":{ "bn": "আর্দ্রা",   "verified": false },
+    "Rigel":     { "bn": "রিগেল",     "verified": false },
+    "Procyon":   { "bn": "প্রসিয়ন",  "verified": false },
+    "Capella":   { "bn": "ব্রহ্মহৃদয়","verified": false },
+    "Deneb":     { "bn": "দেনব",      "verified": false },
+    "Regulus":   { "bn": "মঘা",       "verified": false },
+    "Pollux":    { "bn": "পুনর্বসু",  "verified": false },
+    "Castor":    { "bn": "কাস্টর",    "verified": false },
+    "Fomalhaut": { "bn": "ফোমালহট",  "verified": false },
+    "Mimosa":    { "bn": "মিমোসা",    "verified": false },
+    "Acrux":     { "bn": "আক্রুক্স",  "verified": false }
+  },
+  "planets": {
+    "Mercury": { "bn": "বুধ"   },
+    "Venus":   { "bn": "শুক্র" },
+    "Mars":    { "bn": "মঙ্গল" },
+    "Jupiter": { "bn": "বৃহস্পতি" },
+    "Saturn":  { "bn": "শনি"  },
+    "Uranus":  { "bn": "ইউরেনাস" },
+    "Neptune": { "bn": "নেপচুন" }
+  },
+  "misc": {
+    "Sun":  { "bn": "সূর্য" },
+    "Moon": { "bn": "চাঁদ"  }
+  }
+}

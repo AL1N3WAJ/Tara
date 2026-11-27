@@ -1,0 +1,25 @@
+{
+  "name": "akash-star-chart",
+  "version": "1.0.0",
+  "description": "আকাশ / Akash: Bangladesh Star Chart & Constellation Chart (Bangla + English)",
+  "type": "module",
+  "scripts": {
+    "test": "node tests/astro.test.js && node tests/visibility.test.js && node tests/urlstate.test.js && node scripts/validate_names.js data/names_bn.json",
+    "build:data": "node scripts/build_data.js",
+    "serve": "python -m http.server 8000"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/YOUR_USER/akash.git"
+  },
+  "keywords": [
+    "astronomy",
+    "star-chart",
+    "bangladesh",
+    "bangla",
+    "bortle",
+    "constellations",
+    "pwa"
+  ],
+  "license": "MIT"
+}
