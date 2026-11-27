@@ -1,0 +1,65 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [ main ]
+
+# Allow one concurrent deployment; cancel in-progress runs for the same group
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      # 1. Check out repo
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      # 2. Set up Node 24
+      - name: Setup Node 24
+        uses: actions/setup-node@v5
+        with:
+          node-version: '24'
+
+      # 3. Run unit tests (zero external npm dependencies)
+      - name: Run tests
+        run: npm test
+
+      # 5. Validate Bangla names JSON
+      - name: Validate names_bn.json
+        run: node scripts/validate_names.js data/names_bn.json
+
+      # 6. Inject commit SHA into sw.js as CACHE_VERSION
+      - name: Inject cache version into sw.js
+        run: |
+          SHA="${{ github.sha }}"
+          SHORT_SHA="${SHA:0:7}"
+          sed -i "s/__CACHE_VERSION__/${SHORT_SHA}/g" sw.js
+          echo "Cache version set to: ${SHORT_SHA}"
+
+      # 7. Configure GitHub Pages
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      # 8. Upload the repo root as the Pages artifact
+      #    (everything except node_modules, .git, scripts/, tests/)
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '.'
+
+      # 9. Deploy to GitHub Pages
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
