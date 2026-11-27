@@ -1,0 +1,27 @@
+name: Tests (Pull Request)
+
+on:
+  pull_request:
+    branches: [ main ]
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Setup Node 24
+        uses: actions/setup-node@v5
+        with:
+          node-version: '24'
+
+      - name: Run unit tests
+        run: npm test
+
+      - name: Validate names_bn.json
+        run: node scripts/validate_names.js data/names_bn.json
